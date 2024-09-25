@@ -1,13 +1,25 @@
 # Network Setup and Security Guide for Remote Non-Profits
 
-This guide provides a comprehensive overview of network setup and security best practices specifically designed for fully remote non-profit organizations. It includes a detailed discussion of open-source tools and resources to secure your network and protect sensitive data in a remote working environment.
+This guide provides a comprehensive framework for setting up and securing a network tailored for fully remote non-profit organizations. It includes best practices, open-source tools, and strategies to protect sensitive data in a remote working environment.
+
+---
 
 ## Table of Contents
 
+- [Introduction](#introduction)
 - [Architecture Overview](#architecture-overview)
+  - [Virtual Private Network (VPN)](#virtual-private-network-vpn)
+  - [Cloud Services](#cloud-services)
+  - [Identity and Access Management (IAM)](#identity-and-access-management-iam)
+  - [Network Segmentation](#network-segmentation)
+  - [Encrypted Communication](#encrypted-communication)
 - [Tools Summary](#tools-summary)
 - [Setup Details](#setup-details)
-- [Network Segmentation](#network-segmentation)
+  - [VPN Setup](#vpn-setup)
+  - [Cloud Services Deployment](#cloud-services-deployment)
+  - [Identity and Access Management Setup](#identity-and-access-management-setup)
+  - [Encrypted Communication Implementation](#encrypted-communication-implementation)
+- [Network Segmentation](#network-segmentation-1)
 - [Monitoring and Analysis with Kibana and the ELK Stack](#monitoring-and-analysis-with-kibana-and-the-elk-stack)
 - [Security Monitoring and Incident Response](#security-monitoring-and-incident-response)
 - [User Education and Awareness](#user-education-and-awareness)
@@ -23,159 +35,486 @@ This guide provides a comprehensive overview of network setup and security best 
 - [Incident Response Plan Testing](#incident-response-plan-testing)
 - [Security Metrics and Reporting](#security-metrics-and-reporting)
 - [Conclusion](#conclusion)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+
+---
+
+## Introduction
+
+In today's digital age, fully remote non-profit organizations face unique challenges in securing their networks and protecting sensitive data. This guide aims to provide a detailed roadmap for setting up a secure, efficient, and scalable network infrastructure using open-source tools and best practices tailored for remote working environments.
+
+---
 
 ## Architecture Overview
 
-### VPN
-Secure remote access via [OpenVPN](https://openvpn.net/) or [WireGuard](https://www.wireguard.com/).
+### Virtual Private Network (VPN)
+
+Establish secure remote access using:
+
+- **[OpenVPN](https://openvpn.net/):** A robust VPN solution with extensive features.
+- **[WireGuard](https://www.wireguard.com/):** A lightweight, high-performance VPN with modern cryptography.
 
 ### Cloud Services
-Scalable solutions using platforms like [Nextcloud](https://nextcloud.com/) and [Mattermost](https://mattermost.com/).
 
-### IAM
-Centralized management with [Keycloak](https://www.keycloak.org/) or [FreeIPA](https://www.freeipa.org/).
+Leverage scalable cloud platforms:
+
+- **[Nextcloud](https://nextcloud.com/):** For secure file sharing and collaboration.
+- **[Mattermost](https://mattermost.com/):** For team communication and project collaboration.
+
+### Identity and Access Management (IAM)
+
+Centralize user management:
+
+- **[Keycloak](https://www.keycloak.org/):** Open-source identity and access management.
+- **[FreeIPA](https://www.freeipa.org/):** Integrates LDAP, Kerberos, DNS, and more for centralized management.
 
 ### Network Segmentation
-Isolate critical resources using VLANs and firewall rules.
+
+Isolate and protect resources:
+
+- Use **Virtual Local Area Networks (VLANs)** to separate network traffic.
+- Implement **firewall rules** to control access between segments.
 
 ### Encrypted Communication
-Ensure secure data exchange using tools like [Signal](https://signal.org/) and [OpenPGP](https://www.openpgp.org/).
+
+Ensure all communications are secure:
+
+- **[Signal](https://signal.org/):** For encrypted messaging and voice calls.
+- **[OpenPGP](https://www.openpgp.org/):** For encrypting emails and files.
+
+---
 
 ## Tools Summary
 
-| Tool                                                  | Function                                     |
-|-------------------------------------------------------|----------------------------------------------|
-| [OpenVPN](https://openvpn.net/)                       | Secure remote access VPN                     |
-| [WireGuard](https://www.wireguard.com/)               | Lightweight and fast VPN                     |
-| [Nextcloud](https://nextcloud.com/)                   | File sharing and collaboration platform      |
-| [Mattermost](https://mattermost.com/)                 | Secure team communication platform           |
-| [Keycloak](https://www.keycloak.org/)                 | Identity and access management               |
-| [FreeIPA](https://www.freeipa.org/)                   | Identity management and SSO                  |
-| [Signal](https://signal.org/)                         | Encrypted messaging                          |
-| [OpenPGP](https://www.openpgp.org/)                   | Email encryption standard                    |
-| [ELK stack](https://www.elastic.co/elastic-stack/)    | Security information and event management    |
-| [Graylog](https://www.graylog.org/)                   | Open-source log management                   |
+| Tool                                                 | Function                                        |
+|------------------------------------------------------|-------------------------------------------------|
+| **[OpenVPN](https://openvpn.net/)**                  | Secure remote access VPN                        |
+| **[WireGuard](https://www.wireguard.com/)**          | Lightweight and fast VPN                        |
+| **[Nextcloud](https://nextcloud.com/)**              | File sharing and collaboration platform         |
+| **[Mattermost](https://mattermost.com/)**            | Secure team communication platform              |
+| **[Keycloak](https://www.keycloak.org/)**            | Identity and access management                  |
+| **[FreeIPA](https://www.freeipa.org/)**              | Identity management and SSO                     |
+| **[Signal](https://signal.org/)**                    | Encrypted messaging                             |
+| **[OpenPGP](https://www.openpgp.org/)**              | Email encryption standard                       |
+| **[ELK Stack](https://www.elastic.co/elastic-stack/)**| Security information and event management (SIEM)|
+| **[Graylog](https://www.graylog.org/)**              | Open-source log management                      |
+| **[Bitwarden](https://bitwarden.com/)**              | Password management                             |
+| **[ProtonMail](https://protonmail.com/)**            | Secure email service                            |
+| **[Tutanota](https://tutanota.com/)**                | Encrypted email service                         |
+
+---
 
 ## Setup Details
 
 ### VPN Setup
-1. Select [OpenVPN](https://openvpn.net/) or [WireGuard](https://www.wireguard.com/) as the VPN solution.
-2. Deploy a VPN server on a cloud service (e.g., [DigitalOcean](https://www.digitalocean.com/)).
-3. Use strong encryption (AES-256).
-4. Distribute secure client configurations to remote users.
 
-### Cloud Services
-1. File sharing through [Nextcloud](https://nextcloud.com/) or [ownCloud](https://owncloud.com/).
-2. Collaborative platforms like [Mattermost](https://mattermost.com/).
-3. Secure email via [ProtonMail](https://protonmail.com/) or [Tutanota](https://tutanota.com/).
-4. Password management with [Bitwarden](https://bitwarden.com/).
+1. **Choose a VPN Solution:**
 
-### Identity and Access Management (IAM)
-1. Implement [Keycloak](https://www.keycloak.org/) or [FreeIPA](https://www.freeipa.org/).
-2. Enable SSO and MFA.
-3. Regularly update access permissions.
+   - **OpenVPN:** Offers extensive features suitable for most organizations.
+   - **WireGuard:** Ideal for performance-focused setups with modern encryption.
 
-### Encrypted Communication
-1. Ensure end-to-end encryption with [Signal](https://signal.org/) for messaging.
-2. Use [OpenPGP](https://www.openpgp.org/) for email security.
-3. Mandate HTTPS, SFTP, and SSH for all protocols.
+2. **Deploy VPN Server:**
+
+   - Host on reliable cloud services like [DigitalOcean](https://www.digitalocean.com/), [AWS](https://aws.amazon.com/), or [Azure](https://azure.microsoft.com/).
+   - Ensure the server is regularly updated and maintained.
+
+3. **Configure Strong Encryption:**
+
+   - **OpenVPN:** Use AES-256 encryption.
+   - **WireGuard:** Default configurations provide strong encryption.
+
+4. **Client Configuration:**
+
+   - Generate individual client profiles.
+   - Distribute configurations securely to users.
+   - Enforce VPN usage for accessing organizational resources.
+
+### Cloud Services Deployment
+
+1. **File Sharing and Collaboration:**
+
+   - Set up **Nextcloud** for secure file storage and sharing.
+   - Enable end-to-end encryption and two-factor authentication (2FA).
+
+2. **Communication Platforms:**
+
+   - Deploy **Mattermost** for team communication.
+   - Configure private channels and enforce security settings.
+
+3. **Secure Email:**
+
+   - Use encrypted email services like **ProtonMail** or **Tutanota**.
+   - For on-premise solutions, configure **OpenPGP** with compatible email clients.
+
+4. **Password Management:**
+
+   - Implement **Bitwarden** for secure password storage.
+   - Enforce policies for strong, unique passwords and regular updates.
+
+### Identity and Access Management Setup
+
+1. **Implement IAM Solution:**
+
+   - Deploy **Keycloak** or **FreeIPA** for centralized identity management.
+
+2. **Enable Single Sign-On (SSO):**
+
+   - Simplify user access across multiple services.
+   - Reduce password fatigue and improve security.
+
+3. **Multi-Factor Authentication (MFA):**
+
+   - Require MFA for all critical services.
+   - Use authenticator apps or hardware tokens.
+
+4. **Access Control Policies:**
+
+   - Define user roles and permissions.
+   - Regularly review and update access rights.
+
+### Encrypted Communication Implementation
+
+1. **Secure Messaging:**
+
+   - Mandate the use of **Signal** for all instant messaging.
+   - Disable use of insecure platforms like SMS or unencrypted chats.
+
+2. **Email Encryption:**
+
+   - Train staff on using **OpenPGP** for email communication.
+   - Utilize email clients that support PGP encryption, such as Thunderbird with Enigmail.
+
+3. **Secure Protocols:**
+
+   - Enforce **HTTPS** for all web services.
+   - Use **SFTP** instead of FTP and **SSH** instead of Telnet.
+
+---
 
 ## Network Segmentation
 
-Network segmentation is a critical security practice that involves dividing a network into smaller, isolated subnetworks or zones. By implementing network segmentation, you can:
+Implementing network segmentation enhances security by isolating resources and controlling access.
 
-- Limit the impact of security breaches by restricting attackers to specific zones.
-- Apply varying levels of security controls based on the sensitivity of each zone.
-- Improve network performance by reducing unnecessary traffic between zones.
+1. **Define Network Zones:**
 
-To implement network segmentation:
+   - **Public Zone:** Services accessible to the internet.
+   - **Private Zone:** Internal resources accessible via VPN.
+   - **Restricted Zone:** Sensitive data with limited access.
 
-1. Identify and classify the different zones based on user roles, department functions, or security requirements.
-2. Use VLANs to logically separate the zones at the switch level.
-3. Configure firewall rules and ACLs to control traffic flow between zones.
-4. Regularly review and update the segmentation policies to ensure they align with changing business needs and security risks.
+2. **Use VLANs:**
+
+   - Configure VLANs on network devices to separate traffic logically.
+
+3. **Firewall Configuration:**
+
+   - Use firewalls to control traffic between VLANs.
+   - Apply strict rules based on the principle of least privilege.
+
+4. **Regular Audits:**
+
+   - Review network configurations periodically.
+   - Ensure segmentation remains effective as the network evolves.
+
+---
 
 ## Monitoring and Analysis with Kibana and the ELK Stack
 
-Kibana, as part of the ELK stack, is a powerful tool for monitoring and analyzing log data from various sources across the network. By integrating Kibana into your security setup, you can:
+Set up centralized logging and monitoring to detect and respond to threats effectively.
 
-- Gain visibility into network activity and detect anomalies.
-- Investigate security incidents and perform forensic analysis.
-- Create custom dashboards and visualizations to monitor key security metrics.
-- Set up alerts to notify the security team of potential threats in real-time.
+1. **Install ELK Stack:**
 
-To set up Kibana and the ELK stack:
+   - **Elasticsearch:** Stores and indexes log data.
+   - **Logstash:** Processes and ingests logs from various sources.
+   - **Kibana:** Visualizes data and creates interactive dashboards.
 
-1. Install and configure Elasticsearch as the data storage and search engine.
-2. Install and configure Logstash to collect and process log data from different sources.
-3. Install and configure Kibana as the web-based interface for data visualization and exploration.
-4. Configure log collection from firewalls, servers, and applications using Logstash or Beats.
-5. Create custom dashboards, visualizations, and alerts in Kibana to monitor security events and metrics.
+2. **Configure Log Sources:**
+
+   - Collect logs from servers, firewalls, VPNs, applications, and endpoints.
+
+3. **Set Up Dashboards:**
+
+   - Monitor key metrics such as login attempts, network traffic, and system errors.
+
+4. **Alerting:**
+
+   - Configure alerts for suspicious activities or threshold breaches.
+   - Integrate with communication tools (e.g., email, Slack) for immediate notifications.
+
+---
 
 ## Security Monitoring and Incident Response
-1. Utilize [ELK stack](https://www.elastic.co/elastic-stack/) or [Graylog](https://www.graylog.org/) for SIEM.
-2. Set up alerts for security breaches.
-3. Regular incident response drills and vulnerability assessments.
-4. Develop an incident response plan using resources like the [NIST Computer Security Incident Handling Guide](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf).
+
+Develop a robust incident response strategy to handle security incidents efficiently.
+
+1. **Security Information and Event Management (SIEM):**
+
+   - Use the **ELK Stack** or **Graylog** for SIEM capabilities.
+
+2. **Incident Response Plan:**
+
+   - Create a plan following guidelines like the [NIST SP 800-61r2](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf).
+   - Define roles, communication channels, and procedures for incident handling.
+
+3. **Regular Training and Drills:**
+
+   - Conduct simulations to prepare the team for real incidents.
+
+4. **Vulnerability Assessments:**
+
+   - Schedule regular scans using tools like [OpenVAS](http://www.openvas.org/).
+
+---
 
 ## User Education and Awareness
-1. Provide continuous security training.
-2. Emphasize secure remote working practices.
-3. Encourage secure handling of sensitive data.
+
+Empower your team to be the first line of defense against security threats.
+
+1. **Security Training Programs:**
+
+   - Provide onboarding and annual training sessions.
+   - Cover topics like phishing, password hygiene, and safe data handling.
+
+2. **Policy Documentation:**
+
+   - Maintain clear, accessible security policies and guidelines.
+
+3. **Regular Updates:**
+
+   - Share news on recent threats, security tips, and best practices.
+
+---
 
 ## Continuous Improvement
-1. Periodically review security procedures.
-2. Keep abreast of new security threats.
-3. Engage with the open-source community for insights and updates.
+
+Stay ahead of evolving threats by continuously enhancing your security posture.
+
+1. **Periodic Reviews:**
+
+   - Assess and update security policies and procedures regularly.
+
+2. **Threat Intelligence:**
+
+   - Subscribe to security bulletins, newsletters, and alerts.
+
+3. **Community Engagement:**
+
+   - Participate in forums and groups related to non-profit security.
+
+---
 
 ## Contributing
 
-We welcome contributions from the open-source community to help improve this guide.
+Collaboration strengthens security efforts.
+
+- **Open-Source Community:**
+
+  - Contribute to projects and share improvements with the community.
+
+- **Internal Feedback:**
+
+  - Encourage team members to suggest enhancements and report issues.
+
+---
 
 ## Automated Security Updates
 
-To help keep your project secure, consider using tools like [Dependabot](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/about-dependabot-version-updates) to automatically monitor your dependencies for vulnerabilities and update them as needed.
+Automate updates to reduce vulnerabilities and maintain system integrity.
+
+1. **Use Dependency Management Tools:**
+
+   - Implement tools like [Dependabot](https://dependabot.com/) for monitoring code dependencies.
+
+2. **Automatic OS Updates:**
+
+   - Configure systems to apply security patches automatically where appropriate.
+
+3. **Scheduled Maintenance:**
+
+   - Plan regular update windows to minimize disruptions.
+
+---
 
 ## Data Backup and Recovery
-1. Implement regular data backups, both on-site and off-site.
-2. Create a disaster recovery plan to ensure business continuity in the event of a security incident or system failure.
-3. Test the backup and recovery processes periodically to ensure their effectiveness.
+
+Ensure data integrity and availability through robust backup strategies.
+
+1. **Regular Backups:**
+
+   - Implement daily incremental and weekly full backups of critical data.
+
+2. **Off-Site Storage:**
+
+   - Store backups in secure, geographically separate locations or use cloud storage solutions.
+
+3. **Disaster Recovery Plan:**
+
+   - Develop a plan outlining steps to restore services after an incident.
+
+4. **Testing:**
+
+   - Regularly test backup restoration processes to ensure reliability.
+
+---
 
 ## Cloud Security
-1. Implement proper access controls, encryption, and monitoring for cloud resources.
-2. Follow the shared responsibility model and ensure the organization's security obligations are met.
-3. Regularly audit cloud configurations and permissions to maintain a secure posture.
+
+Secure cloud infrastructure and services to protect data and operations.
+
+1. **Access Controls:**
+
+   - Implement strict IAM policies for cloud resources.
+
+2. **Encryption:**
+
+   - Encrypt data at rest and in transit using strong encryption standards.
+
+3. **Security Configurations:**
+
+   - Use cloud provider tools to audit and enforce security best practices.
+
+4. **Monitoring:**
+
+   - Enable logging and monitoring services like AWS CloudTrail or Azure Monitor.
+
+---
 
 ## Patch Management
-1. Establish a process for timely patching and updating of all systems, applications, and devices.
-2. Prioritize critical and high-risk vulnerabilities.
-3. Consider using tools to automate patch management and ensure consistency across the environment.
+
+Keep systems up-to-date to protect against known vulnerabilities.
+
+1. **Patch Management Policy:**
+
+   - Define timelines and procedures for applying patches based on severity.
+
+2. **Automated Tools:**
+
+   - Use tools like **Ansible**, **Chef**, or **Puppet** for automation.
+
+3. **Testing Environment:**
+
+   - Test patches in a staging environment before deploying to production.
+
+---
 
 ## Third-Party Risk Management
-1. Assess the security risks associated with using third-party services, vendors, or partners.
-2. Conduct security audits and require compliance with specific security standards.
-3. Regularly monitor and review third-party relationships to ensure ongoing security compliance.
+
+Assess and manage risks associated with third-party services and vendors.
+
+1. **Vendor Assessments:**
+
+   - Evaluate the security posture and practices of third-party providers.
+
+2. **Contracts and SLAs:**
+
+   - Include security requirements and compliance obligations in agreements.
+
+3. **Continuous Monitoring:**
+
+   - Regularly review vendor compliance and performance.
+
+---
 
 ## Compliance
-1. Identify and understand the specific industry or regulatory compliance requirements applicable to the organization.
-2. Align security practices and controls with the relevant compliance frameworks.
-3. Regularly assess and audit compliance status to identify and address any gaps.
+
+Adhere to legal and regulatory requirements relevant to your organization.
+
+1. **Identify Applicable Regulations:**
+
+   - Determine if GDPR, HIPAA, or other regulations apply.
+
+2. **Implement Controls:**
+
+   - Align security measures with compliance frameworks like **ISO 27001** or **NIST**.
+
+3. **Documentation and Reporting:**
+
+   - Maintain records of compliance efforts and audit results.
+
+---
 
 ## Physical Security
-1. Implement measures to protect on-site infrastructure, equipment, and data storage devices.
-2. Establish access controls, surveillance, and environmental safeguards for physical premises.
-3. Ensure secure disposal and destruction of sensitive information and assets.
+
+Protect physical assets and data from unauthorized access or damage.
+
+1. **Secure Facilities:**
+
+   - Control physical access to offices and data centers with locks, badges, or biometric systems.
+
+2. **Equipment Security:**
+
+   - Use cable locks for devices and secure storage for sensitive equipment.
+
+3. **Environmental Controls:**
+
+   - Implement protections against fire, flooding, and other environmental hazards.
+
+4. **Asset Disposal:**
+
+   - Properly wipe or destroy old equipment and storage devices.
+
+---
 
 ## Incident Response Plan Testing
-1. Regularly test and update the incident response plan to ensure its effectiveness.
-2. Conduct tabletop exercises and simulations to familiarize team members with their roles and responsibilities.
-3. Incorporate lessons learned from incident response drills and real-world incidents to improve the plan.
+
+Ensure your team is prepared to respond effectively to security incidents.
+
+1. **Tabletop Exercises:**
+
+   - Simulate incidents to practice response procedures.
+
+2. **Update Plans:**
+
+   - Refine the incident response plan based on lessons learned.
+
+3. **Role Assignments:**
+
+   - Clearly define responsibilities and communication protocols.
+
+---
 
 ## Security Metrics and Reporting
-1. Establish key performance indicators (KPIs) and metrics to measure the effectiveness of the security program.
-2. Create regular security reports to keep stakeholders informed and demonstrate the impact of security initiatives.
-3. Use the metrics to identify areas for improvement and prioritize security investments.
+
+Measure and communicate the effectiveness of your security initiatives.
+
+1. **Define Key Performance Indicators (KPIs):**
+
+   - Examples include the number of incidents, response times, and compliance rates.
+
+2. **Regular Reporting:**
+
+   - Provide reports to stakeholders and leadership.
+
+3. **Data-Driven Decisions:**
+
+   - Use metrics to identify areas for improvement and prioritize efforts.
+
+---
 
 ## Conclusion
 
-This guide provides a comprehensive framework for securing a remote non-profit organization's network. By implementing the recommended practices and tools, organizations can establish a robust security posture and protect sensitive data in a remote working environment. Adapt and evolve this framework to meet specific organizational needs and ensure a robust security posture. Engage continuously in security practice reviews and community learning to stay ahead of threats.
+By following this comprehensive guide, your remote non-profit organization can establish a robust security framework that protects sensitive data and supports your mission. Regularly review and update your security practices to adapt to new challenges and technologies. Engage your team and the broader community to foster a culture of security awareness and continuous improvement.
+
+---
+
+## Additional Resources
+
+- **[NIST Cybersecurity Framework](https://www.nist.gov/cyberframework):** Guidelines for managing cybersecurity risks.
+- **[Center for Internet Security (CIS) Controls](https://www.cisecurity.org/controls/):** Prioritized actions to protect against cyber threats.
+- **[Cybersecurity and Infrastructure Security Agency (CISA)](https://www.cisa.gov/):** Resources and alerts on cybersecurity threats.
+- **[SANS Institute](https://www.sans.org/):** Security training and certification programs.
+- **[Open Web Application Security Project (OWASP)](https://owasp.org/):** Resources for web application security.
+
+---
+
+Feel free to contribute to this guide by submitting a pull request or opening an issue on GitHub.
+
+---
+
+# Disclaimer
+
+This guide is provided for informational purposes only. Use of this guide does not guarantee complete security and should be complemented with professional advice and services as needed.
+
+---
+
+Thank you for using this guide. Your commitment to security helps protect not only your organization but also the communities you serve.
